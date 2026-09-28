@@ -13,4 +13,6 @@ public class Cart {
     public void setCartId(String cartId) { this.cartId = cartId; }
     public List<CartItem> getItems() { return items; }
     public void setItems(List<CartItem> items) { this.items = items; }
+
+    public void clear() { items.clear(); }
 }

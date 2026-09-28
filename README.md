@@ -1,46 +1,44 @@
-# Shopping Cart
+# ShopWebsite
 
-Vue.js frontend with a minimal Spring Boot backend. The backend is a single service on port 8080 and uses in-memory storage, so MongoDB, an API gateway, and separate microservices are not required for local development.
+A full-stack shopping platform with a Vue storefront and Spring Boot API organized into authentication, catalog, cart, and order service boundaries. The default local profile uses in-memory storage for easy development.
 
-## Requirements
+## Features
 
-- Java 17+
-- Maven 3.8+
-- Node.js 18+
+- Customer registration/login with `CUSTOMER` and `ADMIN` roles
+- Product browsing and admin-only catalog mutation endpoints
+- User-scoped cart, checkout, delivery address, and payment method
+- Customer order history and admin order status workflow
+- Health endpoint and Docker Compose services
 
-## Run
-
-Start the backend:
+## Run locally
 
 ```bash
 cd backend
 mvn spring-boot:run
-```
 
-Start the frontend in another terminal:
-
-```bash
+# another terminal
 cd frontend
 npm install
 npm run dev
 ```
 
-Open http://localhost:5173. Backend data resets whenever the backend restarts.
+Open http://localhost:5173. Demo accounts: `demo@shop.local` / `demo123`, `admin@shop.local` / `admin123`.
 
-## REST API
+## Run with Docker
 
-Products support the requested endpoints:
+```bash
+docker compose up --build
+```
 
-| Method | Endpoint | Purpose |
-|---|---|---|
-| POST | `/api/products` | Add a product |
-| GET | `/api/products` | List products |
-| GET | `/api/products/{id}` | Get one product |
-| PUT | `/api/products/{id}` | Update a product |
-| DELETE | `/api/products/{id}` | Delete a product |
+## API outline
 
-The same product endpoints are also available without `/api` because the existing frontend calls `/products`.
+| Area | Endpoints |
+|---|---|
+| Auth | `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me` |
+| Catalog | `GET /api/products`; admin writes under `/api/products/admin` |
+| Cart | `/cart/1` and `/cart/1/items` with a bearer token |
+| Checkout | `POST /orders/checkout` |
+| Customer orders | `GET /orders/mine` |
+| Admin orders | `GET /orders/manage`, `PATCH /orders/{id}/status` |
 
-The backend additionally provides the cart and order endpoints used by the frontend: `/cart/{cartId}`, `/cart/{cartId}/items`, and `/orders`.
-
-Products include an `emoji` field used as their logo (for example `💻`, `⌨️`, or `🖥️`). If it is omitted, the backend uses `🛍️`. The backend starts with six sample products: Laptop, Keyboard, Mouse, Headphones, Monitor, and Webcam.
+Storage is currently in-memory for the coursework-sized app. For production, hash passwords, move sessions to Redis or signed JWTs, persist catalog/orders in a database, and place services behind an API gateway/TLS.

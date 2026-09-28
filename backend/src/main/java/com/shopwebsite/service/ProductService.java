@@ -13,10 +13,12 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ProductService {
+    private final AuthService auth;
     private final AtomicLong ids = new AtomicLong(6);
     private final ConcurrentHashMap<Long, Product> products = new ConcurrentHashMap<>();
 
-    public ProductService() {
+    public ProductService(AuthService auth) {
+        this.auth = auth;
         save(new Product(1L, "Laptop", new BigDecimal("50000"), 10,
                 "Powerful laptop for work, study and entertainment.", "💻"));
         save(new Product(2L, "Keyboard", new BigDecimal("1500"), 10,
@@ -30,6 +32,8 @@ public class ProductService {
         save(new Product(6L, "Webcam", new BigDecimal("3000"), 10,
                 "HD webcam for online classes and video meetings.", "📷"));
     }
+
+    public void requireAdmin(String header) { auth.requireAdmin(header.replaceFirst("Bearer ", "")); }
 
     public List<Product> findAll() {
         return products.values().stream().sorted(Comparator.comparing(Product::getId)).toList();

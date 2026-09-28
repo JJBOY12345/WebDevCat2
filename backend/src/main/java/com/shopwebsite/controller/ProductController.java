@@ -19,4 +19,15 @@ public class ProductController {
     @PostMapping @ResponseStatus(HttpStatus.CREATED) public Product create(@Valid @RequestBody Product product) { return service.create(product); }
     @PutMapping("/{id}") public Product update(@PathVariable Long id, @Valid @RequestBody Product product) { return service.update(id, product); }
     @DeleteMapping("/{id}") @ResponseStatus(HttpStatus.NO_CONTENT) public void delete(@PathVariable Long id) { service.delete(id); }
+
+    @PostMapping("/admin") @ResponseStatus(HttpStatus.CREATED)
+    public Product adminCreate(@RequestHeader("Authorization") String header, @Valid @RequestBody Product product) {
+        service.requireAdmin(header); return service.create(product);
+    }
+    @PutMapping("/admin/{id}")
+    public Product adminUpdate(@RequestHeader("Authorization") String header, @PathVariable Long id, @Valid @RequestBody Product product) {
+        service.requireAdmin(header); return service.update(id, product);
+    }
+    @DeleteMapping("/admin/{id}") @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void adminDelete(@RequestHeader("Authorization") String header, @PathVariable Long id) { service.requireAdmin(header); service.delete(id); }
 }

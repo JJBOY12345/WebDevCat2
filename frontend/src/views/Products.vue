@@ -29,6 +29,7 @@
 import axios from 'axios'
 import ProductCard from '../components/ProductCard.vue'
 import { useCartStore } from '../stores/cartStore.js'
+import { useAuthStore } from '../stores/authStore.js'
 
 export default {
   name: 'Products',
@@ -47,6 +48,9 @@ export default {
       default: false
     }
   },
+  computed: {
+    isAdmin() { return useAuthStore().isAdmin }
+  },
   async created() {
     this.loading = true
     try {
@@ -60,6 +64,7 @@ export default {
   },
   methods: {
     async handleAddToCart(product) {
+      if (!useAuthStore().isAuthenticated) { this.$router.push('/login'); return }
       const cartStore = useCartStore()
       await cartStore.addToCart(product)
       this.successMsg = `${product.name} added to cart!`
@@ -69,7 +74,7 @@ export default {
       if (!window.confirm(`Delete ${product.name}?`)) return
 
       try {
-        await axios.delete(`http://localhost:8080/api/products/${product.id}`)
+        await axios.delete(`http://localhost:8080/api/products/admin/${product.id}`)
         this.products = this.products.filter(item => item.id !== product.id)
         this.successMsg = `${product.name} deleted.`
         setTimeout(() => { this.successMsg = null }, 2000)
