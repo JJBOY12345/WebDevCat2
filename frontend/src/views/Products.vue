@@ -28,8 +28,7 @@
       </form>
     </section>
 
-    <div v-if="loading" class="status">Loading products...</div>
-    <div v-else-if="error" class="status error">{{ error }}</div>
+    <div v-if="error" class="status error">{{ error }}</div>
     <div v-else>
       <div class="catalog-heading">
         <h2>Available products are</h2>
@@ -38,8 +37,9 @@
           <button v-if="searchQuery" type="button" @click="clearSearch">Clear</button>
         </div>
       </div>
-      <p v-if="!products.length" class="status">No products match your search.</p>
-      <div class="product-grid">
+      <p v-if="loading" class="status">Loading products...</p>
+      <p v-else-if="!products.length" class="status">No products match your search.</p>
+      <div v-else class="product-grid">
         <ProductCard
           v-for="product in products"
           :key="product.id"
