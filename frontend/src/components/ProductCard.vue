@@ -5,7 +5,12 @@
     <h3>{{ product.name }}</h3>
     <p class="description">{{ product.description }}</p>
     <p class="price">Rs.{{ product.price }}</p>
-    <button class="btn-add" @click="$emit('add-to-cart', product)">Add to Cart</button>
+    <p class="stock" :class="{ 'low-stock': product.stock > 0 && product.stock <= 5, 'out-stock': product.stock === 0 }">
+      {{ product.stock > 0 ? `${product.stock} left in stock` : 'Out of stock' }}
+    </p>
+    <button class="btn-add" :disabled="product.stock === 0" @click="$emit('add-to-cart', product)">
+      {{ product.stock === 0 ? 'Out of Stock' : 'Add to Cart' }}
+    </button>
     <button v-if="isAdmin" class="btn-delete" @click="$emit('delete-product', product)">
       Delete Product
     </button>
@@ -68,6 +73,10 @@ h3 {
   font-size: 0.95rem;
 }
 
+.stock { color: #27ae60; font-size: .85rem; font-weight: bold; }
+.low-stock { color: #d68910; }
+.out-stock { color: #c0392b; }
+
 .btn-add {
   background: #c0392b;
   color: white;
@@ -82,6 +91,8 @@ h3 {
 .btn-add:hover {
   background: #a93226;
 }
+
+.btn-add:disabled { background: #999; cursor: not-allowed; }
 
 .btn-delete {
   background: #666;

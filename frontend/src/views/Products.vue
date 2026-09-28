@@ -34,7 +34,7 @@
       <div class="catalog-heading">
         <h2>Available products are</h2>
         <div class="search-box">
-          <input v-model="searchQuery" type="search" placeholder="Search products..." @input="loadProducts" />
+          <input v-model="searchQuery" type="search" placeholder="Search products..." @input="queueSearch" />
           <button v-if="searchQuery" type="button" @click="clearSearch">Clear</button>
         </div>
       </div>
@@ -74,6 +74,7 @@ export default {
       saving: false,
       formError: null,
       searchQuery: '',
+      searchTimer: null,
       newProduct: { name: '', price: null, stock: 0, description: '', emoji: '🛍️', imageUrl: '' }
     }
   },
@@ -84,6 +85,10 @@ export default {
     this.loadProducts()
   },
   methods: {
+    queueSearch() {
+      clearTimeout(this.searchTimer)
+      this.searchTimer = setTimeout(() => this.loadProducts(), 300)
+    },
     async loadProducts() {
     this.loading = true
     try {

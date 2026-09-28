@@ -64,6 +64,19 @@ public class ProductController {
         repository.delete(one(id));
     }
 
+    @PatchMapping("/{id}/reserve")
+    public Product reserve(@PathVariable String id, @RequestParam int quantity) {
+        if (quantity < 1) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Quantity must be positive");
+        }
+        Product product = one(id);
+        if (product.getStock() < quantity) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient stock");
+        }
+        product.setStock(product.getStock() - quantity);
+        return repository.save(product);
+    }
+
     private void admin(String role) {
         if (!"ADMIN".equals(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin role required");
