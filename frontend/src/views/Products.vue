@@ -42,12 +42,6 @@ export default {
       successMsg: null
     }
   },
-  props: {
-    isAdmin: {
-      type: Boolean,
-      default: false
-    }
-  },
   computed: {
     isAdmin() { return useAuthStore().isAdmin }
   },

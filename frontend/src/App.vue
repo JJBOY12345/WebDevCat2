@@ -4,5 +4,18 @@ import { useAuthStore } from './stores/authStore.js'
 export default { computed: { auth() { return useAuthStore() } }, methods: { logout() { this.auth.logout(); this.$router.push('/login') } } }
 </script>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,Arial,sans-serif;background:#f5f7fb;color:#172033}#app{min-height:100vh;display:flex;flex-direction:column}.navbar{background:#182848;color:#fff;padding:18px 6%;display:flex;justify-content:space-between;align-items:center}.brand{font-weight:800;font-size:1.35rem;color:#fff;text-decoration:none}.navbar nav{display:flex;align-items:center;gap:18px}.navbar a{color:#dfe7ff;text-decoration:none}.navbar a.router-link-active{color:#fff;font-weight:700}.navbar button{background:#fff;color:#182848;border:0;border-radius:6px;padding:8px 14px;cursor:pointer}.welcome{color:#aebce0;font-size:.9rem}main{flex:1;padding:34px 6%}.footer{text-align:center;padding:20px;background:#111827;color:#9ca3af;font-size:.85rem}button,.btn{cursor:pointer}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f0f0f0; }
+#app { display: flex; flex-direction: column; min-height: 100vh; }
+.navbar { background: #4a00e0; color: white; padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; }
+.navbar .brand { font-size: 1.3rem; font-weight: bold; color: white; text-decoration: none; }
+.navbar nav { display: flex; align-items: center; gap: 0; }
+.navbar nav a { color: white; text-decoration: none; margin-left: 20px; font-size: .95rem; }
+.navbar nav a:hover, .navbar nav a.router-link-active { text-decoration: underline; }
+.navbar nav button { margin-left: 20px; background: transparent; border: 1px solid rgba(255,255,255,.7); color: white; padding: 6px 10px; border-radius: 4px; cursor: pointer; font-size: .9rem; }
+.navbar nav button:hover { background: rgba(255,255,255,.15); }
+.welcome { color: white; margin-left: 20px; font-size: .9rem; }
+main { flex: 1; padding: 32px; }
+.footer { background: #222; color: #ccc; text-align: center; padding: 16px; font-size: .85rem; }
+button, .btn { cursor: pointer; }
 </style>

@@ -2,4 +2,4 @@
 <script>
 import axios from 'axios'; export default { data:()=>({orders:[],statuses:['PLACED','PACKED','SHIPPED','DELIVERED','CANCELLED']}),async created(){this.orders=(await axios.get('http://localhost:8083/api/orders')).data},methods:{async update(order,status){const {data}=await axios.patch(`http://localhost:8083/api/orders/${order.id}/status`,{status});Object.assign(order,data)}}}
 </script>
-<style scoped>.admin{max-width:900px;margin:auto}.muted{color:#68738a;margin:8px 0 25px}.order{background:#fff;padding:18px;margin:12px 0;border-radius:10px}.order div{display:flex;justify-content:space-between;gap:15px}.order span{color:#68738a}.order p{color:#68738a;margin:12px 0}.order select{padding:8px;border:1px solid #d5dbea;border-radius:6px}</style>
+<style scoped>.admin{max-width:900px;margin:auto}.muted{color:#666;margin:8px 0 25px}.order{background:#fff;padding:18px;margin:12px 0;border-radius:10px}.order div{display:flex;justify-content:space-between;gap:15px}.order span{color:#666}.order p{color:#666;margin:12px 0}.order select{padding:8px;border:1px solid #d5dbea;border-radius:6px}</style>
