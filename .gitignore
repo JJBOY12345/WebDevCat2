@@ -4,6 +4,7 @@
 
 # Java/Maven build output
 backend/target/
+**/target/
 
 # Node/Vite dependencies and build output
 frontend/node_modules/

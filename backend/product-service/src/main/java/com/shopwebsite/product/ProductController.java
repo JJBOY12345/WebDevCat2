@@ -1,4 +1,5 @@
 package com.shopwebsite.product;
+import org.springframework.web.server.ResponseStatusException;
 import jakarta.validation.Valid;import org.springframework.http.*;import org.springframework.web.bind.annotation.*;import java.util.*;
 @RestController @RequestMapping("/api/products") public class ProductController { private final ProductRepository repo; public ProductController(ProductRepository repo){this.repo=repo;}
  @GetMapping public List<Product> all(){return repo.findAll();} @GetMapping("/{id}") public Product one(@PathVariable String id){return repo.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found"));}

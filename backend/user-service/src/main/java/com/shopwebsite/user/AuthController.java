@@ -1,4 +1,5 @@
 package com.shopwebsite.user;
+import org.springframework.web.server.ResponseStatusException;
 import jakarta.validation.Valid;import jakarta.validation.constraints.*;import org.springframework.http.*;import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;import org.springframework.web.bind.annotation.*;import java.util.*;import java.util.concurrent.ConcurrentHashMap;
 @CrossOrigin(origins="http://localhost:5173") @RestController @RequestMapping("/api") public class AuthController {
  private final UserRepository repo; private final BCryptPasswordEncoder encoder=new BCryptPasswordEncoder(); private final Map<String,User> sessions=new ConcurrentHashMap<>();
