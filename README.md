@@ -32,7 +32,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173. Demo accounts: `demo@shop.local` / `demo123`, `admin@shop.local` / `admin123`.
+Open http://localhost:5173. Demo users and passwords are listed in [USERS.md](USERS.md).
 
 ## Service layout
 
