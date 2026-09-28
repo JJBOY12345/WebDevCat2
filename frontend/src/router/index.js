@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Checkout from '../views/Checkout.vue'
 import Orders from '../views/Orders.vue'
 import AdminOrders from '../views/AdminOrders.vue'
+import AdminDashboard from '../views/AdminDashboard.vue'
 
 const routes = [
   { path: '/', redirect: '/products' },
@@ -14,6 +15,7 @@ const routes = [
   { path: '/checkout', component: Checkout, meta: { auth: true } },
   { path: '/orders', component: Orders, meta: { auth: true } }
   ,{ path: '/admin/orders', component: AdminOrders, meta: { auth: true, admin: true } }
+  ,{ path: '/admin/dashboard', component: AdminDashboard, meta: { auth: true, admin: true } }
 ]
 
 const router = createRouter({

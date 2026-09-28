@@ -21,6 +21,7 @@
         <label>Price<input v-model.number="newProduct.price" type="number" min="0.01" step="0.01" required /></label>
         <label>Stock<input v-model.number="newProduct.stock" type="number" min="0" required /></label>
         <label>Emoji / logo<input v-model.trim="newProduct.emoji" maxlength="8" placeholder="🛍️" /></label>
+        <label>Image URL <span class="optional">(optional)</span><input v-model.trim="newProduct.imageUrl" type="url" placeholder="https://example.com/product.jpg" /></label>
         <label class="description-field">Description<textarea v-model.trim="newProduct.description" required rows="2"></textarea></label>
         <p v-if="formError" class="form-error">{{ formError }}</p>
         <button class="btn-submit" type="submit" :disabled="saving">{{ saving ? 'Saving...' : 'Save product' }}</button>
@@ -30,7 +31,14 @@
     <div v-if="loading" class="status">Loading products...</div>
     <div v-else-if="error" class="status error">{{ error }}</div>
     <div v-else>
-      <h2>Available products are</h2>
+      <div class="catalog-heading">
+        <h2>Available products are</h2>
+        <div class="search-box">
+          <input v-model="searchQuery" type="search" placeholder="Search products..." @input="loadProducts" />
+          <button v-if="searchQuery" type="button" @click="clearSearch">Clear</button>
+        </div>
+      </div>
+      <p v-if="!products.length" class="status">No products match your search.</p>
       <div class="product-grid">
         <ProductCard
           v-for="product in products"
@@ -65,24 +73,34 @@ export default {
       showAddForm: false,
       saving: false,
       formError: null,
-      newProduct: { name: '', price: null, stock: 0, description: '', emoji: '🛍️' }
+      searchQuery: '',
+      newProduct: { name: '', price: null, stock: 0, description: '', emoji: '🛍️', imageUrl: '' }
     }
   },
   computed: {
     isAdmin() { return useAuthStore().isAdmin }
   },
   async created() {
+    this.loadProducts()
+  },
+  methods: {
+    async loadProducts() {
     this.loading = true
     try {
-      const res = await axios.get('http://localhost:8081/api/products')
+      const res = await axios.get('http://localhost:8081/api/products', {
+        params: this.searchQuery.trim() ? { q: this.searchQuery.trim() } : {}
+      })
       this.products = res.data
     } catch (e) {
       this.error = 'Failed to load products. Make sure backend services are running.'
     } finally {
       this.loading = false
     }
-  },
-  methods: {
+    },
+    clearSearch() {
+      this.searchQuery = ''
+      this.loadProducts()
+    },
     async createProduct() {
       this.saving = true
       this.formError = null
@@ -92,10 +110,11 @@ export default {
           price: this.newProduct.price,
           stock: this.newProduct.stock,
           description: this.newProduct.description,
-          emoji: this.newProduct.emoji || '🛍️'
+          emoji: this.newProduct.emoji || '🛍️',
+          imageUrl: this.newProduct.imageUrl || null
         })
         this.products.unshift(response.data)
-        this.newProduct = { name: '', price: null, stock: 0, description: '', emoji: '🛍️' }
+        this.newProduct = { name: '', price: null, stock: 0, description: '', emoji: '🛍️', imageUrl: '' }
         this.showAddForm = false
         this.successMsg = `${response.data.name} added to the catalog.`
         setTimeout(() => { this.successMsg = null }, 2500)
@@ -170,6 +189,7 @@ h2 {
 
 .admin-panel-heading h2 { margin-bottom: 4px; }
 .admin-panel-heading p { color: #666; font-size: .9rem; }
+.optional { color: #777; font-weight: normal; }
 
 .toggle-form, .btn-submit {
   background: #4a00e0;
@@ -200,6 +220,12 @@ h2 {
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
+
+.catalog-heading { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
+.catalog-heading h2 { margin-bottom: 0; }
+.search-box { display: flex; gap: 6px; }
+.search-box input { min-width: 240px; padding: 9px 10px; border: 1px solid #bbb; border-radius: 4px; font: inherit; }
+.search-box button { padding: 9px 12px; border: 1px solid #4a00e0; background: white; color: #4a00e0; border-radius: 4px; }
 
 .status {
   text-align: center;

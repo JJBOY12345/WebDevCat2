@@ -1,6 +1,7 @@
 <template>
   <div class="product-card">
-    <div class="product-emoji">{{ product.emoji || '🛍️' }}</div>
+    <img v-if="product.imageUrl" class="product-image" :src="product.imageUrl" :alt="product.name" />
+    <div v-else class="product-emoji">{{ product.emoji || '🛍️' }}</div>
     <h3>{{ product.name }}</h3>
     <p class="description">{{ product.description }}</p>
     <p class="price">Rs.{{ product.price }}</p>
@@ -41,6 +42,14 @@ export default {
 
 .product-emoji {
   font-size: 2rem;
+}
+
+.product-image {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #f5f5f5;
 }
 
 h3 {

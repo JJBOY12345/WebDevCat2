@@ -1,8 +1,72 @@
 package com.shopwebsite.product;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import jakarta.validation.Valid;import org.springframework.http.*;import org.springframework.web.bind.annotation.*;import java.util.*;
-@RestController @RequestMapping("/api/products") public class ProductController { private final ProductRepository repo; public ProductController(ProductRepository repo){this.repo=repo;}
- @GetMapping public List<Product> all(){return repo.findAll();} @GetMapping("/{id}") public Product one(@PathVariable String id){return repo.findById(id).orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"Product not found"));}
- @PostMapping @ResponseStatus(HttpStatus.CREATED) public Product create(@RequestHeader("X-Role") String role,@Valid @RequestBody Product p){admin(role);return repo.save(p);} @PutMapping("/{id}") public Product update(@RequestHeader("X-Role") String role,@PathVariable String id,@Valid @RequestBody Product p){admin(role);p.setId(id);one(id);return repo.save(p);} @DeleteMapping("/{id}") public void delete(@RequestHeader("X-Role") String role,@PathVariable String id){admin(role);repo.delete(one(id));}
- private void admin(String role){if(!"ADMIN".equals(role))throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Admin role required");}
+
+import jakarta.validation.Valid;
+
+@RestController
+@RequestMapping("/api/products")
+public class ProductController {
+    private final ProductRepository repository;
+
+    public ProductController(ProductRepository repository) {
+        this.repository = repository;
+    }
+
+    @GetMapping
+    public List<Product> all(@RequestParam(required = false) String q) {
+        if (q == null || q.isBlank()) {
+            return repository.findAll();
+        }
+        return repository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(q.trim(), q.trim());
+    }
+
+    @GetMapping("/{id}")
+    public Product one(@PathVariable String id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Product create(@RequestHeader("X-Role") String role, @Valid @RequestBody Product product) {
+        admin(role);
+        return repository.save(product);
+    }
+
+    @PutMapping("/{id}")
+    public Product update(@RequestHeader("X-Role") String role, @PathVariable String id,
+                          @Valid @RequestBody Product product) {
+        admin(role);
+        one(id);
+        product.setId(id);
+        return repository.save(product);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@RequestHeader("X-Role") String role, @PathVariable String id) {
+        admin(role);
+        repository.delete(one(id));
+    }
+
+    private void admin(String role) {
+        if (!"ADMIN".equals(role)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin role required");
+        }
+    }
 }
