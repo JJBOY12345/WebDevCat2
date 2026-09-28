@@ -54,7 +54,7 @@ export default {
   async created() {
     this.loading = true
     try {
-      const res = await axios.get('http://localhost:8080/products')
+      const res = await axios.get('http://localhost:8081/api/products')
       this.products = res.data
     } catch (e) {
       this.error = 'Failed to load products. Make sure backend services are running.'
@@ -74,7 +74,7 @@ export default {
       if (!window.confirm(`Delete ${product.name}?`)) return
 
       try {
-        await axios.delete(`http://localhost:8080/api/products/admin/${product.id}`)
+        await axios.delete(`http://localhost:8081/api/products/${product.id}`)
         this.products = this.products.filter(item => item.id !== product.id)
         this.successMsg = `${product.name} deleted.`
         setTimeout(() => { this.successMsg = null }, 2000)

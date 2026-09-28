@@ -1,0 +1,3 @@
+package com.shopwebsite.cart;
+import org.springframework.data.annotation.Id;import org.springframework.data.mongodb.core.mapping.Document;import java.math.BigDecimal;import java.util.*;
+@Document("carts") public class Cart { @Id private String userId; private List<Item> items=new ArrayList<>(); public Cart(){} public Cart(String id){userId=id;} public String getUserId(){return userId;} public void setUserId(String v){userId=v;} public List<Item> getItems(){return items;} public void setItems(List<Item> v){items=v;} public BigDecimal total(){return items.stream().map(i->i.price.multiply(BigDecimal.valueOf(i.quantity))).reduce(BigDecimal.ZERO,BigDecimal::add);} public record Item(String productId,String productName,BigDecimal price,int quantity,String emoji){} }

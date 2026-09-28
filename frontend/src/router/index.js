@@ -4,6 +4,7 @@ import Cart from '../views/Cart.vue'
 import Login from '../views/Login.vue'
 import Checkout from '../views/Checkout.vue'
 import Orders from '../views/Orders.vue'
+import AdminOrders from '../views/AdminOrders.vue'
 
 const routes = [
   { path: '/', redirect: '/products' },
@@ -12,6 +13,7 @@ const routes = [
   { path: '/cart', component: Cart, meta: { auth: true } },
   { path: '/checkout', component: Checkout, meta: { auth: true } },
   { path: '/orders', component: Orders, meta: { auth: true } }
+  ,{ path: '/admin/orders', component: AdminOrders, meta: { auth: true, admin: true } }
 ]
 
 const router = createRouter({
@@ -19,6 +21,6 @@ const router = createRouter({
   routes
 })
 
-router.beforeEach((to) => { if (to.meta.auth && !localStorage.getItem('shop_token')) return '/login' })
+router.beforeEach((to) => { if (to.meta.auth && !localStorage.getItem('shop_token')) return '/login'; if (to.meta.admin && JSON.parse(localStorage.getItem('shop_user') || '{}').role !== 'ADMIN') return '/products' })
 
 export default router
