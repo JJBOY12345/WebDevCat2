@@ -18,14 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
     private final ProductRepository repository;
 
-    public ProductController(ProductRepository repository) {
+    private final JwtService jwt;
+
+    public ProductController(ProductRepository repository, @Value("${jwt.secret}") String secret) {
         this.repository = repository;
+        this.jwt = new JwtService(secret);
     }
 
     @GetMapping
@@ -44,15 +48,15 @@ public class ProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Product create(@RequestHeader("X-Role") String role, @Valid @RequestBody Product product) {
-        admin(role);
+    public Product create(@RequestHeader("Authorization") String authorization, @Valid @RequestBody Product product) {
+        admin(authorization);
         return repository.save(product);
     }
 
     @PutMapping("/{id}")
-    public Product update(@RequestHeader("X-Role") String role, @PathVariable String id,
+    public Product update(@RequestHeader("Authorization") String authorization, @PathVariable String id,
                           @Valid @RequestBody Product product) {
-        admin(role);
+        admin(authorization);
         one(id);
         product.setId(id);
         return repository.save(product);
@@ -60,8 +64,8 @@ public class ProductController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestHeader("X-Role") String role, @PathVariable String id) {
-        admin(role);
+    public void delete(@RequestHeader("Authorization") String authorization, @PathVariable String id) {
+        admin(authorization);
         repository.delete(one(id));
     }
 
@@ -83,8 +87,10 @@ public class ProductController {
         return reserve(id, quantity);
     }
 
-    private void admin(String role) {
-        if (!"ADMIN".equals(role)) {
+    private void admin(String authorization) {
+        try {
+            if (!"ADMIN".equals(jwt.parse(authorization).get("role", String.class))) throw new Exception();
+        } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin role required");
         }
     }
