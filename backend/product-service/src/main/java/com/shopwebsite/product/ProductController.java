@@ -78,6 +78,11 @@ public class ProductController {
         return repository.save(product);
     }
 
+    @PostMapping("/{id}/reserve")
+    public Product reserveForService(@PathVariable String id, @RequestParam int quantity) {
+        return reserve(id, quantity);
+    }
+
     private void admin(String role) {
         if (!"ADMIN".equals(role)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Admin role required");
