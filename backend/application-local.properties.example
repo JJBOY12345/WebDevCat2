@@ -1,0 +1,3 @@
+# Copy this file to application-local.properties once on your computer.
+# Keep the same value for all four backend services.
+jwt.secret=replace-this-with-a-random-secret-at-least-32-characters

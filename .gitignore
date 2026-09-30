@@ -14,6 +14,7 @@ frontend/dist/
 .env
 .env.*
 !.env.example
+backend/application-local.properties
 
 # Logs and OS files
 *.log
