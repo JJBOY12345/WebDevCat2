@@ -11,6 +11,10 @@
     <button class="btn-add" :disabled="product.stock === 0" @click="$emit('add-to-cart', product)">
       {{ product.stock === 0 ? 'Out of Stock' : 'Add to Cart' }}
     </button>
+    <form v-if="isAdmin" class="stock-form" @submit.prevent="$emit('update-stock', product, stockValue)">
+      <label>Stock <input v-model.number="stockValue" type="number" min="0" required /></label>
+      <button class="btn-stock" type="submit">Update stock</button>
+    </form>
     <button v-if="isAdmin" class="btn-delete" @click="$emit('delete-product', product)">
       Delete Product
     </button>
@@ -30,7 +34,10 @@ export default {
       default: false
     }
   },
-  emits: ['add-to-cart', 'delete-product']
+  emits: ['add-to-cart', 'delete-product', 'update-stock'],
+  data() {
+    return { stockValue: this.product.stock }
+  }
 }
 </script>
 
@@ -93,6 +100,11 @@ h3 {
 }
 
 .btn-add:disabled { background: #999; cursor: not-allowed; }
+
+.stock-form { display: grid; gap: 6px; margin-top: 4px; }
+.stock-form label { font-size: .82rem; font-weight: bold; }
+.stock-form input { width: 100%; box-sizing: border-box; padding: 7px; border: 1px solid #ccc; border-radius: 4px; margin-top: 4px; }
+.btn-stock { background: #4a00e0; color: white; border: none; padding: 8px; border-radius: 4px; cursor: pointer; }
 
 .btn-delete {
   background: #666;

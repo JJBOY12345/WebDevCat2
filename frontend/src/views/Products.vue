@@ -46,6 +46,7 @@
           :product="product"
           :is-admin="isAdmin"
           @add-to-cart="handleAddToCart"
+          @update-stock="updateStock"
           @delete-product="deleteProduct"
         />
       </div>
@@ -146,6 +147,20 @@ export default {
         setTimeout(() => { this.successMsg = null }, 2000)
       } catch (e) {
         this.error = 'Failed to delete product.'
+      }
+    },
+    async updateStock(product, stock) {
+      try {
+        const response = await axios.put(`http://localhost:8081/api/products/${product.id}`, {
+          ...product,
+          stock: Number(stock)
+        })
+        const index = this.products.findIndex(item => item.id === product.id)
+        if (index !== -1) this.products.splice(index, 1, response.data)
+        this.successMsg = `${product.name} stock updated.`
+        setTimeout(() => { this.successMsg = null }, 2000)
+      } catch (e) {
+        this.error = e.response?.data?.message || 'Failed to update stock.'
       }
     }
   }
