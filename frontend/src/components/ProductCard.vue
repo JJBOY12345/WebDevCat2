@@ -8,7 +8,7 @@
     <p class="stock" :class="{ 'low-stock': product.stock > 0 && product.stock <= 5, 'out-stock': product.stock === 0 }">
       {{ product.stock > 0 ? `${product.stock} left in stock` : 'Out of stock' }}
     </p>
-    <button class="btn-add" :disabled="product.stock === 0" @click="$emit('add-to-cart', product)">
+    <button v-if="!isAdmin" class="btn-add" :disabled="product.stock === 0" @click="$emit('add-to-cart', product)">
       {{ product.stock === 0 ? 'Out of Stock' : 'Add to Cart' }}
     </button>
     <form v-if="isAdmin" class="stock-form" @submit.prevent="$emit('update-stock', product, stockValue)">
