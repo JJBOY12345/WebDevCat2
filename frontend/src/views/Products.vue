@@ -94,7 +94,7 @@ export default {
     async loadProducts() {
     this.loading = true
     try {
-      const res = await axios.get('http://localhost:8081/api/products', {
+      const res = await axios.get('/api/products', {
         params: this.searchQuery.trim() ? { q: this.searchQuery.trim() } : {}
       })
       this.products = res.data
@@ -112,7 +112,7 @@ export default {
       this.saving = true
       this.formError = null
       try {
-        const response = await axios.post('http://localhost:8081/api/products', {
+        const response = await axios.post('/api/products', {
           name: this.newProduct.name,
           price: this.newProduct.price,
           stock: this.newProduct.stock,
@@ -142,7 +142,7 @@ export default {
       if (!window.confirm(`Delete ${product.name}?`)) return
 
       try {
-        await axios.delete(`http://localhost:8081/api/products/${product.id}`)
+        await axios.delete(`/api/products/${product.id}`)
         this.products = this.products.filter(item => item.id !== product.id)
         this.successMsg = `${product.name} deleted.`
         setTimeout(() => { this.successMsg = null }, 2000)
@@ -152,7 +152,7 @@ export default {
     },
     async updateStock(product, stock) {
       try {
-        const response = await axios.put(`http://localhost:8081/api/products/${product.id}`, {
+        const response = await axios.put(`/api/products/${product.id}`, {
           ...product,
           stock: Number(stock)
         })
@@ -166,7 +166,7 @@ export default {
     },
     async editProduct(product, changes) {
       try {
-        const response = await axios.put(`http://localhost:8081/api/products/${product.id}`, {
+        const response = await axios.put(`/api/products/${product.id}`, {
           ...product, ...changes, price: Number(changes.price), stock: Number(product.stock)
         })
         const index = this.products.findIndex(item => item.id === product.id)

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
-const API = 'http://localhost:8080/api/auth'
+const API = '/api/auth'
 export const useAuthStore = defineStore('auth', {
   state: () => ({ token: localStorage.getItem('shop_token'), user: JSON.parse(localStorage.getItem('shop_user') || 'null') }),
   getters: { isAuthenticated: s => Boolean(s.token), isAdmin: s => s.user?.role === 'ADMIN' },

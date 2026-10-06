@@ -33,11 +33,11 @@ export default {
   }),
 
   async created() {
-    const orders = (await axios.get('http://localhost:8083/api/orders')).data
+    const orders = (await axios.get('/api/orders')).data
 
     this.orders = await Promise.all(orders.map(async order => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/users/${order.userId}`)
+        const response = await axios.get(`/api/users/${order.userId}`)
         return { ...order, customer: response.data }
       } catch {
         return { ...order, customer: null }
@@ -48,7 +48,7 @@ export default {
   methods: {
     async update(order, status) {
       const { data } = await axios.patch(
-        `http://localhost:8083/api/orders/${order.id}/status`,
+        `/api/orders/${order.id}/status`,
         { status }
       )
       Object.assign(order, data)

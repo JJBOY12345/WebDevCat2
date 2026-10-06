@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
 import { useAuthStore } from './authStore.js'
-const API = 'http://localhost:8082/api/carts'
+const API = '/api/carts'
 export const useCartStore = defineStore('cart', { state: () => ({ items: [], loading: false }), getters: { total: s => s.items.reduce((sum, i) => sum + Number(i.price) * i.quantity, 0), itemCount: s => s.items.reduce((sum, i) => sum + i.quantity, 0) }, actions: {
   userPath() { return `${API}/${useAuthStore().user.id}` },
   async fetchCart() { this.loading = true; try { this.items = (await axios.get(this.userPath())).data.items || [] } finally { this.loading = false } },
