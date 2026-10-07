@@ -1,3 +1,5 @@
+.vscode/
+
 # IntelliJ IDEA
 .idea/
 *.iml
